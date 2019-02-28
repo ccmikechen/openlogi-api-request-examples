@@ -1,0 +1,306 @@
+:host = https://api-demo.openlogi.com
+:token = TOKEN
+
+GET :host/
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+# 商品
+
+## 商品登録
+
+POST :host/api/items
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+
+{
+  "code": "TEST_0002",
+  "name": "Test Product 2",
+  "price": 100
+}
+
+## 一括商品登録
+
+POST :host/api/items/bulk
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+{
+  "items": [
+  {
+    "code": "TEST_0003",
+    "name": "Test Product 3",
+    "price": 120,
+    "description": "long long"
+  },
+  {
+    "code": "TEST_0004",
+    "name": "Test Product 4",
+    "price": 100,
+    "description": "long long"
+  }]
+}
+
+## 商品画像登録
+
+:id = HO233-I000001
+:img = https://upload.wikimedia.org/wikipedia/commons/e/ee/Apples.jpg
+
+POST :host/api/items/:id/images
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: multipart/form-data
+
+------sample
+Content-Disposition: form-data; name="file"; filename="https://upload.wikimedia.org/wikipedia/commons/e/ee/Apples.jpg"
+Content-Type: image/jpeg
+------sample--
+
+## 商品一覧
+GET :host/api/items?stock=0
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 商品情報
+
+:id = HO233-I000000
+
+GET :host/api/items/:id?stock=0
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 商品更新
+
+:id = HO233-I000099
+
+PUT :host/api/items/:id
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+{
+  "name": "Test Product 3",
+  "price": 300
+}
+
+## 商品削除
+
+:id = HO233-I000007
+
+DELETE :host/api/items/:id
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+# 入庫
+
+## 入庫依頼
+
+POST :host/api/warehousings
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+{
+  "inspection_type": "CODE",
+  "items": [
+    {
+      "code": "TEST_0001",
+      "quantity": 20
+    }
+  ],
+  "arrival_date": "2018-12-20"
+}
+
+## 入庫依頼一覧
+
+GET :host/api/warehousings
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 直近の入庫実績
+
+GET :host/api/warehousings/stocked?date_after=20180101&date_before=20180131
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 入庫実績
+
+GET :host/api/warehousings/stocked/2018/10/31
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 入庫情報
+
+:id = HO233-W0001
+
+GET :host/api/warehousings/:id
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 入庫依頼更新
+
+:id = HO233-W0003
+
+PUT :host/api/warehousings/:id
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "code": "TEST_0003",
+      "quantity": 6
+    }
+  ]
+}
+
+## 入庫依頼削除
+
+:id = HO233-W0004
+
+DELETE :host/api/warehousings/:id
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+# 出庫
+
+## 出庫依頼
+
+POST :host/api/shipments
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+{
+  "identifier": "2015-00021",
+  "recipient": {
+    "postcode": "170-0013",
+    "prefecture": "東京都",
+    "address1": "豊島区東池袋1-34-5",
+    "name": "山田 太郎",
+    "phone": "03-3333-3333"
+  },
+  "items": [
+    {
+      "code": "TEST_0001",
+      "quantity": 1,
+      "price": 200
+    }
+  ],
+  "label_note": "アルバム"
+}
+
+## 出庫更新
+
+:id = HO233-S000013
+
+PUT :host/api/shipments/:id
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+{
+  "identifier": "2015-00012",
+  "items": [
+    {
+      "code": "TEST_0001",
+      "quantity": 3
+    }
+  ],
+  "label_note": "アルバム"
+}
+
+## 出庫修正依頼
+
+:id = HO233-S000016
+
+POST :host/api/shipments/:id/modify
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+{
+  "recipient": {
+    "postcode": "111-0003",
+    "prefecture": "東京都",
+    "address1": "渋区渋谷1-1-1",
+    "address2": "ラダトーム101",
+    "name": "山田 郎",
+    "company": "スライ株式会社",
+    "division": "メタ部",
+    "phone": "03-4414-3335"
+  },
+}
+
+## 出庫キャンセル依頼
+
+:id = HO233-S000017
+
+POST :host/api/shipments/:id/cancel
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 出庫依頼一覧
+
+GET :host/api/shipments
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 出庫実績
+
+GET :host/api/shipments/shipped/2018/10/31
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 出庫情報
+
+:id = HO233-S000005
+
+GET :host/api/shipments/:id
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 国コード情報
+
+GET :host/api/shipments/international/regions/ems
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 通貨情報
+
+GET :host/api/shipments/international/currencies
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 出庫依頼削除
+
+:id = HO233-S000007
+
+DELETE :host/api/shipments/:id
+X-Api-Version: 1.4
+Authorization: Bearer :token
+
+## 倉庫移動
+
+POST :host/api/shipments/transfer
+X-Api-Version: 1.4
+Authorization: Bearer :token
+Content-Type: application/json
+
+{
+  "warehouse": "NBT",
+  "destination": {
+    "warehouse": "NBZ"
+  },
+  "items": [
+    {
+      "code": "DQ001",
+      "quantity": 1
+    }
+  ]
+}
